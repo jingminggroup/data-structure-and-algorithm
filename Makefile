@@ -21,3 +21,6 @@ $(OBJS): %.o:%.cpp
 .PHONY: clean
 clean:
 	-rm -rf $(BUILD_DIR)
+
+run:
+	./build/hello

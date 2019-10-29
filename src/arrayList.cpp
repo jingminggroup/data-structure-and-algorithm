@@ -7,9 +7,20 @@ using namespace std;
 
 void arrayList::checkIndex(int theIndex)
 {
-    if (theIndex < 0 || theIndex > this->listSize) {
+    if (theIndex < 0 || theIndex > this->arrayLength) {
         throw "out of border";
     }
+}
+
+void arrayList::extend()
+{
+    this->arrayLength *= 2;
+    int* temp = new int[arrayLength];
+    memset(temp, 0, arrayLength);
+    memcpy(temp, this->element, this->listSize);
+    delete [] element;
+    element = temp; 
+    temp = nullptr;
 }
 
 arrayList::arrayList(int initialCapacity)
@@ -18,8 +29,8 @@ arrayList::arrayList(int initialCapacity)
     if (this->element == nullptr) {
         throw "null ptr exception";
     }
-    this->listSize = initialCapacity;
-    this->arrayLength = this->listSize;
+    this->listSize = 0;
+    this->arrayLength = initialCapacity;
     memset(this->element, 0, this->listSize);
 }
 
@@ -69,20 +80,35 @@ int arrayList::indexOf(const int& theElement) const
 void arrayList::erase(int theIndex)
 {
     this->checkIndex(theIndex);
-    memcpy(this->element+theIndex, this->element+theIndex+1, this->listSize-1-theIndex);
+    for (int index = theIndex; index < this->listSize-theIndex; index++) {
+        this->element[index] = this->element[index+1];
+    }
     this->listSize--;
 }
 
 void arrayList::insert(int theIndex, const int& theElement)
 {
-    this->checkIndex(theIndex);
-    memmove(this->element+theIndex+1, this->element+theIndex, this->listSize-theIndex);
+    if (this->listSize == this->arrayLength) {
+        this->extend();
+    }
+    if (this->listSize != 0) {
+        this->checkIndex(theIndex);
+        for (int index = this->listSize-1; index >= theIndex; index--) {
+            this->element[index+1] = this->element[index];
+        }
+    }
+    this->element[theIndex] = theElement;
     this->listSize++;
 }
 
 void arrayList::output() const
 {
+    if (this->listSize == 0) {
+        cout << "the array list is empty" << endl;
+        return ;
+    }
     for (int index = 0; index < this->listSize; index++) {
         cout << this->element[index] << " ";
     }
+    cout << endl;
 }

@@ -9,6 +9,7 @@ class arrayList : public linearList
         int listSize = 0;
         int arrayLength = 0;
         void checkIndex(int theIndex);
+        void extend();
     public:
         // 构造函数，复制构造函数和析构函数
         arrayList(int initialCapacity = 10);

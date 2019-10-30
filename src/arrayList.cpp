@@ -7,17 +7,17 @@ using namespace std;
 
 void arrayList::checkIndex(int theIndex)
 {
-    if (theIndex < 0 || theIndex > this->arrayLength) {
-        throw "out of border";
+    if (theIndex < 0 || theIndex > this->listSize) {
+        throw range_error("out of border");
     }
 }
 
 void arrayList::extend()
 {
     this->arrayLength *= 2;
-    int* temp = new int[arrayLength];
+    int* temp = new int[this->arrayLength];
     memset(temp, 0, arrayLength);
-    memcpy(temp, this->element, this->listSize);
+    memcpy(temp, this->element, (this->listSize)*sizeof(int));
     delete [] element;
     element = temp; 
     temp = nullptr;
@@ -58,7 +58,11 @@ int arrayList::size() const
 
 int arrayList::get(int theIndex)
 {
-    this->checkIndex(theIndex);
+    try {
+        this->checkIndex(theIndex);
+    } catch(const std::exception& e) {
+        std::cerr << "Exception:" << " " << __FILE__ << " " << __func__ << " " << __LINE__ << " " << e.what() << '\n';
+    }
     return this->element[theIndex];
 }
 
@@ -79,11 +83,13 @@ int arrayList::indexOf(const int& theElement) const
 
 void arrayList::erase(int theIndex)
 {
-    this->checkIndex(theIndex);
-    for (int index = theIndex; index < this->listSize-theIndex; index++) {
-        this->element[index] = this->element[index+1];
+    try {
+        this->checkIndex(theIndex);
+        memcpy(this->element+theIndex, this->element+theIndex+1, (this->listSize-1-theIndex)*sizeof(int));
+        this->listSize--;
+    } catch(const std::exception& e) {
+        std::cerr << "Exception:" << " " << __FILE__ << " " << __func__ << " " << __LINE__ << " " << e.what() << '\n';
     }
-    this->listSize--;
 }
 
 void arrayList::insert(int theIndex, const int& theElement)
@@ -92,9 +98,11 @@ void arrayList::insert(int theIndex, const int& theElement)
         this->extend();
     }
     if (this->listSize != 0) {
-        this->checkIndex(theIndex);
-        for (int index = this->listSize-1; index >= theIndex; index--) {
-            this->element[index+1] = this->element[index];
+        try {
+            this->checkIndex(theIndex);
+            memmove(this->element+theIndex+1, this->element+theIndex, (this->listSize-theIndex)*sizeof(int));
+        } catch(const std::exception& e) {
+            std::cerr << "Exception:" << " " << __FILE__ << " " << __func__ << " " << __LINE__ << " " << e.what() << '\n';
         }
     }
     this->element[theIndex] = theElement;

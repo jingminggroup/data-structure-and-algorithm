@@ -15,5 +15,6 @@ int main()
     c.insert(2, 6);
     c.erase(3);
     c.output();
+    
     return 0;
 }

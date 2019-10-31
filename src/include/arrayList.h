@@ -2,10 +2,11 @@
 #define ARRAYLIST_H_
 #include "linearList.h"
 
-class arrayList : public linearList
+template<typename T>
+class arrayList : public linearList<T>
 {
     private:
-        int* element = nullptr;
+        T* element = nullptr;
         int listSize = 0;
         int arrayLength = 0;
         void checkIndex(int theIndex);
@@ -19,10 +20,10 @@ class arrayList : public linearList
         //ADT 方法
         bool empty() const;
         int size() const;
-        int get(int theIndex);
-        int indexOf(const int& theElement) const;
+        T get(int theIndex);
+        int indexOf(const T& theElement) const;
         void erase(int theIndex);
-        void insert(int theIndex, const int& theElement);
+        void insert(int theIndex, const T& theElement);
         void output() const;
 };
 

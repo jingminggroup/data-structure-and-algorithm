@@ -2,26 +2,29 @@
 #define CHAIN_H_
 #include "linearList.h"
 
+template<typename T>
 struct chainNode {
-    int element;
-    chainNode* next;
+    T element;
+    chainNode<T>* next;
 
     chainNode() {}
-    chainNode(int element) {
+    chainNode(T element) {
         this->element = element;
     }
-    chainNode(int element, chainNode* next) {
+    chainNode(T element, chainNode<T>* next) {
         this->element = element;
         this->next = next;
     }
 };
 
-class chain : public linearList
+template<typename T>
+class chain : public linearList<T>
 {
     private:
         int listSize = 0;
-        chainNode* headerNode = nullptr;
+        chainNode<T>* headerNode = nullptr;
         void checkIndex(int theIndex);
+        chainNode<T>* reverse(chainNode<T>*);
     public:
         chain();
         chain(const chain&);
@@ -29,11 +32,23 @@ class chain : public linearList
 
         bool empty() const;
         int size() const;
-        int get(int theIndex);
-        int indexOf(const int& theElement) const;
+        T get(int theIndex);
+        int indexOf(const T& theElement) const;
         void erase(int theIndex);
-        void insert(int theIndex, const int& theElement);
+        void insert(int theIndex, const T& theElement);
         void output() const;
+        void setSzie(int theSize);
+        void set(int theIndex, const T& theElement);
+        void removeRange(int fromIndex, int toIndex);
+        int lastIndexOf(const T& theElement);
+        const T& operator[](int theIndex);
+        bool operator==(const chain<T>&);
+        bool operator!=(const chain<T>&);
+        bool operator<(const chain<T>&);
+        void swap(const chain<T>&);
+        void leftShift(int);
+        void reverse();
+        void reverseRecursive();
 };
 
 #endif

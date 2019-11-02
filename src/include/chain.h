@@ -39,6 +39,10 @@ class chain : public linearList<T>
         void setSzie(int theSize);
         void set(int theIndex, const T& theElement);
         void removeRange(int fromIndex, int toIndex);
+        int lastIndexOf(const T& theElement);
+        const T& operator[](int theIndex);
+        bool operator==(const chain<T>&);
+        bool operator!=(const chain<T>&);
 };
 
 #endif

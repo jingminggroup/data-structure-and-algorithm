@@ -405,3 +405,4 @@ void chain<T>::reverseRecursive()
 {
     this->reverse(this->headerNode->next)->next = nullptr;
 }
+

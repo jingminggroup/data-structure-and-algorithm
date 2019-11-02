@@ -12,6 +12,13 @@ int main()
     c.insert(1, 'b');
     c.insert(2, 'c');
     c.insert(3, 'd');
+<<<<<<< HEAD
+    c.insert(4, 'e');
+    c.insert(5, 'f');
+    c.output();
+    c.reverseRecursive();
+    c.output();
+=======
     c.insert(4, 'a');
     c.insert(5, 'd');
     d.insert(0, 'a');
@@ -26,5 +33,6 @@ int main()
     } else {
         cout << "false" << endl;
     }
+>>>>>>> master
     return 0;
 }

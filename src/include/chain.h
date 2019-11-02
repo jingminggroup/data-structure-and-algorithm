@@ -24,6 +24,7 @@ class chain : public linearList<T>
         int listSize = 0;
         chainNode<T>* headerNode = nullptr;
         void checkIndex(int theIndex);
+        chainNode<T>* reverse(chainNode<T>*);
     public:
         chain();
         chain(const chain&);
@@ -43,6 +44,11 @@ class chain : public linearList<T>
         const T& operator[](int theIndex);
         bool operator==(const chain<T>&);
         bool operator!=(const chain<T>&);
+        bool operator<(const chain<T>&);
+        void swap(const chain<T>&);
+        void leftShift(int);
+        void reverse();
+        void reverseRecursive();
 };
 
 #endif

@@ -405,7 +405,7 @@ void chain<T>::reverseRecursive()
 {
     this->reverse(this->headerNode->next)->next = nullptr;
 }
-=======
+
 // P124 2
 template<typename T>
 void chain<T>::setSzie(int theSize)

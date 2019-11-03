@@ -24,19 +24,21 @@ chain<T>::chain(const chain& theList)
 {
     if (theList.listSize != 0) {
         this->listSize = theList.listSize;
-        this->headerNode->element = theList.headerNode->element;
-
-        chainNode<T>* sourceNode = this->headerNode;
-        chainNode<T>* targetNode = theList.headerNode;
-        while (sourceNode->next != nullptr) {
-            sourceNode = sourceNode->next;
+        chainNode<T>* newNode = new chainNode<T>(theList.headerNode->element, nullptr);
+        this->headerNode = newNode;
+        
+        chainNode<T>* sourceNode = theList.headerNode->next;
+        chainNode<T>* targetNode = this->headerNode;
+        while (sourceNode != nullptr) {
             chainNode<T>* newNode = new chainNode<T>(sourceNode->element, nullptr);
             targetNode->next = newNode;
             targetNode = targetNode->next;
+            sourceNode = sourceNode->next;
         }
     } else {
+        chainNode<T>* newNode = new chainNode<T>(theList.headerNode->element, nullptr);
+        this->headerNode = newNode;
         this->listSize = theList.listSize;
-        this->headerNode->element = theList.headerNode->element;
         return ;
     }
 }
@@ -141,6 +143,52 @@ void chain<T>::insert(int theIndex, const T& theElement)
     } catch(const std::exception& e) {
         std::cerr << e.what() << '\n';
     }
+}
+
+template<typename T>
+void chain<T>::operator=(const chain& theChain)
+{
+    if (theChain.listSize != 0) {
+        this->listSize = theChain.listSize;
+        chainNode<T>* newNode = new chainNode<T>(theChain.headerNode->element, nullptr);
+        this->headerNode = newNode;
+        
+        chainNode<T>* sourceNode = theChain.headerNode->next;
+        chainNode<T>* targetNode = this->headerNode;
+        while (sourceNode != nullptr) {
+            chainNode<T>* newNode = new chainNode<T>(sourceNode->element, nullptr);
+            targetNode->next = newNode;
+            targetNode = targetNode->next;
+            sourceNode = sourceNode->next;
+        }
+    } else {
+        chainNode<T>* newNode = new chainNode<T>(theChain.headerNode->element, nullptr);
+        this->headerNode = newNode;
+        this->listSize = theChain.listSize;
+        return ;
+    }
+}
+
+template<typename T>
+void chain<T>::clear()
+{
+    chainNode<T>* curNode = this->headerNode->next;
+    while (curNode != nullptr) {
+        curNode->element = 0;
+        curNode = curNode->next;
+    }
+}
+
+template<typename T>
+void chain<T>::push_back(const T& theElement)
+{
+    chainNode<T>* curNode = this->headerNode;
+    while (curNode->next != nullptr) {
+        curNode = curNode->next;
+    }
+    chainNode<T>* newNode = new chainNode<T>(theElement, nullptr);
+    curNode->next = newNode;
+    this->listSize++;
 }
 
 template<typename T>
@@ -406,141 +454,60 @@ void chain<T>::reverseRecursive()
     this->reverse(this->headerNode->next)->next = nullptr;
 }
 
-// P124 2
+// P124 17
 template<typename T>
-void chain<T>::setSzie(int theSize)
+chainNode<T>* chain<T>::getHeaderPtr()
 {
-    int index = 0;
-    if (this->listSize <= theSize) {
-        return ;
-    } else {
-        chainNode<T>* deleteNode = nullptr;
-        chainNode<T>* currentNode = this->headerNode;
-        while (index < theSize) {
-            currentNode = currentNode->next;
-            index++;
-        }
-        deleteNode = currentNode->next;
-        currentNode->next = nullptr;
-        while (currentNode->next != nullptr) {
-            currentNode = currentNode->next;
-            delete deleteNode;
-            deleteNode = currentNode;
-        }
-    }
+    return this->headerNode;
 }
 
-// P124 3
 template<typename T>
-void chain<T>::set(int theIndex, const T& theElement)
+chain<T> melt(chain<T> a, chain<T> b)
 {
-    int index = 0;
-    try {
-        this->checkIndex(theIndex);
-    } catch(const std::exception& e) {
-        std::cerr << e.what() << '\n';
+    chainNode<T>* preNode = a.getHeaderPtr()->next;
+    chainNode<T>* curNode = b.getHeaderPtr()->next;
+    chainNode<T>* nxtNode = preNode->next;
+    while (curNode != nullptr && nxtNode != nullptr) {
+        preNode->next = curNode;
+        curNode = curNode->next;
+        preNode = preNode->next;
+        preNode->next = nxtNode;
+        preNode = nxtNode;
+        nxtNode = nxtNode->next;
     }
-    chainNode<T>* currentNode = this->headerNode;
-    while (index <= theIndex) {
-        currentNode = currentNode->next;
-        index++;
+    chain<T> c;
+    preNode = a.getHeaderPtr()->next;
+    while (preNode != nullptr) {
+        c.push_back(preNode->element);
+        preNode = preNode->next;
     }
-    currentNode->element = theElement;
+    b.getHeaderPtr()->next = nullptr;
+    return c;
 }
 
-// P124 4
+// P124 18
 template<typename T>
-void chain<T>::removeRange(int fromIndex, int toIndex)
+chain<T> chain<T>::melt(chain<T> b)
 {
-    chainNode<T>* fromIndexNode = this->headerNode;
-    chainNode<T>* toIndexNode = this->headerNode;
-    try {
-        this->checkIndex(fromIndex);
-        this->checkIndex(toIndex);
-    } catch (std::exception e) {
-        cerr << e.what() << endl;
+    chainNode<T>* preNode = this->headerNode->next;
+    chainNode<T>* curNode = b.getHeaderPtr()->next;
+    chainNode<T>* nxtNode = preNode->next;
+    while (curNode != nullptr && nxtNode != nullptr) {
+        preNode->next = curNode;
+        curNode = curNode->next;
+        preNode = preNode->next;
+        preNode->next = nxtNode;
+        preNode = nxtNode;
+        nxtNode = nxtNode->next;
     }
-    int index = 0;
-    while (index < fromIndex) {
-        fromIndexNode = fromIndexNode->next;
-        index++;
+    chain<T> c;
+    preNode = this->headerNode->next;
+    while (preNode != nullptr) {
+        c.push_back(preNode->element);
+        preNode = preNode->next;
     }
-    toIndexNode = fromIndexNode;
-    while (index <= toIndex) {
-        toIndexNode = toIndexNode->next;
-        index++;
-    }
-    chainNode<T>* deleteNode = fromIndexNode->next;
-    chainNode<T>* currentNode = deleteNode;
-    fromIndexNode->next = nullptr;
-    while (currentNode != toIndexNode) {
-        currentNode = currentNode->next;
-        delete deleteNode;
-        deleteNode = currentNode;
-        this->listSize--;
-    }
-    fromIndexNode->next = currentNode->next;
-    delete currentNode;
-}
-
-// P124 5
-template<typename T>
-int chain<T>::lastIndexOf(const T& theElement)
-{
-    int index = 0, lastIndex = -1;
-    chainNode<T>* currentNode = this->headerNode->next;
-    while (currentNode != nullptr) {
-        if (currentNode->element == theElement) {
-            lastIndex = index;
-        }        
-        currentNode = currentNode->next;
-        index++;
-    }
-    return lastIndex;
-}
-
-// P124 6
-template<typename T>
-const T& chain<T>::operator[](int theIndex)
-{
-    try {
-        this->checkIndex(theIndex);
-    } catch(const std::exception& e) {
-        std::cerr << e.what() << endl;
-    }
-    int index = 0;
-    chainNode<T>* currentNode = this->headerNode->next;
-    while (index != theIndex) {
-        currentNode = currentNode->next;
-        index++;
-    }
-    return currentNode->element;
-}
-
-// P124 7
-template<typename T>
-bool chain<T>::operator==(const chain<T>& secondChain)
-{
-    if (this->listSize != secondChain.listSize) {
-        return false;
-    } else {
-        chainNode<T>* firstCurrentNode = this->headerNode->next;
-        chainNode<T>* secondCurrentNode = secondChain.headerNode->next;
-        while (firstCurrentNode != nullptr && secondCurrentNode != nullptr) {
-            if (firstCurrentNode->element != secondCurrentNode->element) {
-                return false;
-            } else {
-                firstCurrentNode = firstCurrentNode->next;
-                secondCurrentNode = secondCurrentNode->next;
-            }
-        }
-    }
-    return true;
-}
-
-// P124 8
-template<typename T>
-bool chain<T>::operator!=(const chain<T>& secondChain)
-{
-    return ~this->operator==(secondChain);
+    b.getHeaderPtr()->next = nullptr;
+    this->~chain();
+    this->headerNode->next = nullptr;
+    return c;
 }

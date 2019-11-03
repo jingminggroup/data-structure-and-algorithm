@@ -1,6 +1,7 @@
 #ifndef CHAIN_H_
 #define CHAIN_H_
 #include "linearList.h"
+#include "extendLinerList.h"
 
 template<typename T>
 struct chainNode {
@@ -18,7 +19,7 @@ struct chainNode {
 };
 
 template<typename T>
-class chain : public linearList<T>
+class chain : public extendLinearList<T>
 {
     private:
         int listSize = 0;
@@ -36,6 +37,10 @@ class chain : public linearList<T>
         int indexOf(const T& theElement) const;
         void erase(int theIndex);
         void insert(int theIndex, const T& theElement);
+        void clear();
+        void push_back(const T& theElement);
+        chainNode<T>* getHeaderPtr();
+        void operator=(const chain&);
         void output() const;
         void setSzie(int theSize);
         void set(int theIndex, const T& theElement);
@@ -49,6 +54,10 @@ class chain : public linearList<T>
         void leftShift(int);
         void reverse();
         void reverseRecursive();
+        chain<T> melt(chain<T> b);
 };
 
+
+template<typename T>
+chain<T> melt(chain<T> a, chain<T> b);
 #endif
